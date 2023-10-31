@@ -3,6 +3,7 @@ from models.users import User
 from models.booking import Booking
 from models.pickupDelivery import PickUpDelivery
 from models.review import Review
+from apis.cloudinary_route import cloudinary_routes
 from models.dbconfig import db
 from models.storageUnit import StorageUnit
 from flask_migrate import Migrate
@@ -14,15 +15,15 @@ import os
 
 
 
-
-
 # creating flask app
 app = Flask(__name__)
 
-
-
 app.config.from_object(Config)
 CORS(app)
+
+# Attach Cloudinary routes
+cloudinary_routes(app)
+
 bcrypt =Bcrypt(app)
 
 # Initialize database

@@ -18,3 +18,5 @@ This is a repository for Phase_5 Capstone project sdf-ft05 class
 `pip install Flask-CORS`
 `pip install Flask-Migrate`
 `pip install Flask-SQLAlchemy`
+`pip install redis`
+`pip install cloudinary`
