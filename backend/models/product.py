@@ -14,12 +14,11 @@ class Product(db.Model, SerializerMixin):
     image_url = db.Column(db.String(500))  # from Cloudinary
     quantity = db.Column(db.Integer, nullable=False, default=1)
     weight = db.Column(db.Float, nullable=False)  # in kilograms
-    
     category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
-    category = relationship("Category", back_populates="products")
+    # booking_id = db.Column(db.Integer, db.ForeignKey('bookings.booking_id'))
     
-    booking_id = db.Column(db.Integer, db.ForeignKey('bookings.booking_id'))
-    booking = relationship("Booking", back_populates="product")
+    category = relationship("Category", back_populates="products")
+    bookings = relationship("Booking", back_populates="product")
 
     def __repr__(self):
         return f'Product({self.name}, Category: {self.category.name})'

@@ -2,7 +2,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from flask_bcrypt import generate_password_hash, check_password_hash
-from .dbconfig import db
+from models.dbconfig import db
+from models.booking import Booking
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
@@ -24,8 +25,10 @@ class User(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    bookings = relationship("Booking", back_populates="client")
+    bookings = relationship("Booking", foreign_keys=[Booking.client_id], back_populates="client")
+    assigned_bookings = relationship("Booking", foreign_keys=[Booking.employee_id], back_populates="employee")
     services = relationship("PickUpDelivery", back_populates="client")
+    payments = relationship("Payment", back_populates="client")
     
     # Password hashing functions
     def set_password(self, password):

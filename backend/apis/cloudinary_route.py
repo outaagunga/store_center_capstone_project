@@ -1,8 +1,12 @@
-from flask import request, jsonify, send_from_directory, redirect
+from flask import request, jsonify, send_from_directory, redirect, Blueprint
 import cloudinary
 import cloudinary.uploader
-from models import User, db  # or appropriate import path for your models
+from models.users import User, db  # or appropriate import path for your models
 from sqlalchemy.exc import IntegrityError
+
+
+
+cloudinary_routes = Blueprint('cloudinary', __name__)
 
 # Configure cloudinary with app configurations
 def configure_cloudinary(app):
@@ -12,10 +16,10 @@ def configure_cloudinary(app):
         api_secret=app.config["CLOUDINARY_API_SECRET"]
     )
 
-def cloudinary_routes(app):
+def configure_cloudinary_routes(app):
     configure_cloudinary(app)
 
-    @app.route('/upload', methods=['POST'])
+    @cloudinary_routes.route('/upload', methods=['POST'])
     def upload_image():
         user_id = request.form.get('user_id')  # Getting user_id from the form
         context = request.form.get('context', 'default')
@@ -56,7 +60,7 @@ def cloudinary_routes(app):
 
         return jsonify({"url": url, "context": context}), 200
 
-    @app.route('/add_profile/<int:user_id>/<string:folder>', methods=['POST'])
+    @cloudinary_routes.route('/add_profile/<int:user_id>/<string:folder>', methods=['POST'])
     def add_profile(user_id, folder):
         if 'file' not in request.files:
             return jsonify({'error': 'No file part'})
@@ -77,7 +81,7 @@ def cloudinary_routes(app):
         else:
             return jsonify({'error': 'User not found'}), 404
 
-    @app.route('/uploads/profiles/<profile>', methods=["GET"])
+    @cloudinary_routes.route('/uploads/profiles/<profile>', methods=["GET"])
     def get_profile(profile):
         user = User.query.filter_by(profile_image_url=profile).first()
         if user:

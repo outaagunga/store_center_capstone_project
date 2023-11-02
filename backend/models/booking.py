@@ -14,16 +14,18 @@ class Booking(db.Model, SerializerMixin):
 
     booking_id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    unit_id = db.Column(db.Integer, db.ForeignKey('storage_units.unit_id'))
+    employee_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    storage_unit_id = db.Column(db.Integer, db.ForeignKey('storage_units.unit_id'))
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     # goods_description = db.Column(db.String, nullable=False)
     product_id = db.Column(db.Integer, ForeignKey('products.product_id'))
    
     
-    
-    unit = relationship("StorageUnit", backref="bookings")
-    product = relationship("Product", back_populates="booking")
+    client = relationship("User", foreign_keys=[client_id], back_populates="bookings")
+    employee = relationship("User", foreign_keys=[employee_id], back_populates="assigned_bookings")
+    unit = relationship("StorageUnit", back_populates="bookings")
+    product = relationship("Product", foreign_keys=[product_id], back_populates="bookings")
     
     def __repr__(self):
         return f'Booking({self.booking_id}, Product: {self.product.name})'

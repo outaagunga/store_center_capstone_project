@@ -5,7 +5,7 @@ from .dbconfig import db
 
 
 class PickUpDelivery(db.Model, SerializerMixin):
-    __tablename__ = 'pickup_delivery'
+    __tablename__ = 'pickup_deliveries'
     
     # Serialization rules
     serializer_rules = ['service_id', 'client_id', 'service_type', 'date', 'address', 'status']
