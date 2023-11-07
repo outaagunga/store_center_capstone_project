@@ -1,16 +1,17 @@
 # app.py
-from flask import jsonify, request
+# from flask import jsonify, request
 from flask import Flask, request, jsonify, make_response, session
-import uuid
+# import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
-from api.models.user import User
-from api.app import app
+from models.user import User
+from models.database import db, app
 
 
 # Decorator that defines @token_required
+
 
 def token_required(f):
     @wraps(f)
@@ -67,7 +68,3 @@ def login():
     print("Login failed: Password check failed")
 
     return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-
-
-if __name__ == '__main__':
-    app.run(debug=True)

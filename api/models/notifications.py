@@ -1,7 +1,7 @@
 
 
 from datetime import datetime
-from api.app import db
+from models.database import db
 
 
 class Notification(db.Model):

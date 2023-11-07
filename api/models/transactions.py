@@ -1,6 +1,7 @@
 from datetime import datetime
-from api.app import db
-from api.models.order import Order
+from models.database import db
+from models.order import Order
+from models.user import User
 
 
 class Transaction(db.Model):

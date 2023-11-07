@@ -1,5 +1,9 @@
 from datetime import datetime
-from api.app import db
+from models.database import db
+from models.storagespace import StorageSpace
+from models.review import Review
+from models.notifications import Notification
+from models.logs import Log
 
 
 class User(db.Model):
@@ -24,24 +28,25 @@ class User(db.Model):
 
     # Relationships
     orders = db.relationship('Order', back_populates='user', lazy=True)
-    customers = db.relationship('Customer', backref='user', lazy=True)
     storage_spaces = db.relationship('StorageSpace', backref='user', lazy=True)
-    storage_locations = db.relationship(
-        'StorageLocation', backref='user', lazy=True)
-    transactions = db.relationship('Transaction', backref='user', lazy=True)
-    receipts = db.relationship('Receipt', backref='user', lazy=True)
-    items_to_be_received = db.relationship(
-        'ToBeReceived', backref='user', lazy=True)
-    items_to_be_picked = db.relationship(
-        'ToBePicked', backref='user', lazy=True)
-    reviews = db.relationship('Review', backref='user', lazy=True)
-    discounts = db.relationship('Discount', backref='user', lazy=True)
-    pickup_services = db.relationship(
-        'PickupService', backref='user', lazy=True)
-    notifications = db.relationship('Notification', backref='user', lazy=True)
-    logs = db.relationship('Log', backref='user', lazy=True)
-    closed_orders = db.relationship('ClosedOrder', backref='user', lazy=True)
-    storage_slots = db.relationship('StorageSlot', backref='user', lazy=True)
+    # storage_locations = db.relationship(
+    #     'StorageLocation', backref='user', lazy=True)
+    # transactions = db.relationship('Transaction', backref='user', lazy=True)
+    # receipts = db.relationship('Receipt', backref='user', lazy=True)
+    # items_to_be_received = db.relationship(
+    #     'ToBeReceived', backref='user', lazy=True)
+    # items_to_be_picked = db.relationship(
+    #     'ToBePicked', backref='user', lazy=True)
+    reviews = db.relationship('Review', back_populates='user', lazy=True)
+    # reviews = db.relationship('Review', backref='user', lazy=True)
+    # discounts = db.relationship('Discount', backref='user', lazy=True)
+    # pickup_services = db.relationship(
+    #     'PickupService', backref='user', lazy=True)
+    notifications = db.relationship(
+        'Notification', back_populates='user', lazy=True)
+    logs = db.relationship('Log', back_populates='user', lazy=True)
+    # closed_orders = db.relationship('ClosedOrder', backref='user', lazy=True)
+    # storage_slots = db.relationship('StorageSlot', backref='user', lazy=True)
 
     def __init__(self, public_id, full_name, username, email, phone_number, password, role, profile_picture=None, address=None, date_of_birth=None, gender=None, bio=None):
         self.public_id = public_id

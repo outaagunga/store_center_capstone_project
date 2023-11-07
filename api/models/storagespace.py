@@ -1,4 +1,4 @@
-from api.app import db
+from models.database import db
 
 
 class StorageSpace(db.Model):
@@ -18,8 +18,8 @@ class StorageSpace(db.Model):
     longitude = db.Column(db.Float(precision=6), nullable=False)
 
     # Relationships
-    user = db.relationship('User', back_populates='storage_spaces')
-    bookings = db.relationship('Booking', back_populates='space')
+    # user = db.relationship('User', back_populates='storage_spaces')
+    # bookings = db.relationship('Booking', back_populates='space')
 
     def __init__(self, user_id, name, size, capacity, price_per_month, address, latitude, longitude, description=None, available=True):
         self.user_id = user_id
