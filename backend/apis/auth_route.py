@@ -1,17 +1,22 @@
 from flask import Blueprint, request, jsonify, current_app, url_for
 from models.users import User
 from models.dbconfig import db
-from config import redis_client 
+from config import Config 
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
-from forms import RegistrationForm, LoginForm, ResetPasswordForm
-from app import mail
+from forms.authforms import RegistrationForm, LoginForm, ResetPasswordForm
+# from app import mail
 import jwt
 from random import randint
 from datetime import datetime, timedelta
 
-auth = Blueprint('auth', __name__)
+auth_routes = Blueprint('auth', __name__)
+
+
+
+config = Config() # Creating an instance of Config
+redis_client = config.redis_client
 
 # Serializer for generating tokens
 serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
@@ -22,8 +27,9 @@ EXPIRATION = 3600  # Token validity in seconds
 
 
 
-@auth.route('/signup', methods=['POST'])
+@auth_routes.route('/signup', methods=['POST'])
 def sign_up():
+    from app import mail
     form = RegistrationForm(request.form)
     
     if form.validate():
@@ -38,7 +44,7 @@ def sign_up():
         db.session.commit()
 
         # Send verification email
-        msg = Message('Verify your email', sender='your_email@example.com', recipients=[new_user.email])
+        msg = Message('Verify your email', sender=Config.MAIL_USERNAME, recipients=[new_user.email])
         msg.body = f'Click here to verify your account: {url_for("auth.verify_email", token=token, _external=True)}'
         mail.send(msg)
 
@@ -47,7 +53,7 @@ def sign_up():
     return jsonify(form.errors), 400
 
 
-@auth.route('/verify/<token>')
+@auth_routes.route('/verify/<token>')
 def verify_email(token):
     try:
         email = serializer.loads(token, salt=current_app.config['SECURITY_PASSWORD_SALT'], max_age=3600)
@@ -65,8 +71,9 @@ def verify_email(token):
         return jsonify({'message': 'The verification link is invalid or has expired'}), 400
     
     
-@auth.route('/signin', methods=['POST'])
+@auth_routes.route('/signin', methods=['POST'])
 def sign_in():
+    from app import mail
     form = LoginForm(request.form)
     
 
@@ -100,7 +107,7 @@ def sign_in():
     return jsonify(form.errors), 400
 
 
-@auth.route('/verify-2fa', methods=['POST'])
+@auth_routes.route('/verify-2fa', methods=['POST'])
 def verify_2fa():
     user_id = request.form.get('user_id')
     code = request.form.get('code')
@@ -120,8 +127,9 @@ def verify_2fa():
 
 
 
-@auth.route('/request-reset', methods=['POST'])
+@auth_routes.route('/request-reset', methods=['POST'])
 def request_reset_password():
+    from app import mail
     form = ResetPasswordForm(request.form)
     
     if form.validate():
@@ -142,7 +150,7 @@ def request_reset_password():
     return jsonify(form.errors), 400
 
 
-auth.route('/reset/<token>', methods=['POST'])
+auth_routes.route('/reset/<token>', methods=['POST'])
 def reset_password(token):
     try:
         email = serializer.loads(token, salt=current_app.config['SECURITY_PASSWORD_SALT'], max_age=3600)

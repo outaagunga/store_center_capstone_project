@@ -16,6 +16,9 @@ werkzeug = "*"
 flask-cors = "*"
 flask-migrate = "*"
 flask-sqlalchemy = "*"
+sqlalchemy-serializer = "*"
+requests = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

@@ -15,7 +15,7 @@ class StorageUnit(db.Model, SerializerMixin):
 
     
     
-    booking = relationship("Booking", uselist=False, back_populates="unit")
+    bookings = relationship("Booking", back_populates="unit")
     
     # Explicit CheckConstraint 
     __table_args__ = (db.CheckConstraint(price >= 0, name='check_price_positive'),)
