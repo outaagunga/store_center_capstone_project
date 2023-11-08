@@ -57,7 +57,7 @@ def login():
 
     if not user:
         print("Login failed: User not found")
-        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+        return make_response('{"error":"could not verify"} ', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
     if check_password_hash(user.password, auth.password):
         token = jwt.encode({'user_id': user.user_id, 'exp': datetime.utcnow() + timedelta(minutes=30)},

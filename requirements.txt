@@ -6,3 +6,5 @@ PyJWT
 PyJWT
 SQLAlchemy
 Werkzeug
+cors 
+flask-cors 
