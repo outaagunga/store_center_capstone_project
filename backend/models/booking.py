@@ -1,12 +1,19 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy import CheckConstraint
+from datetime import timedelta
 from .dbconfig import db
 
 
 
 class Booking(db.Model, SerializerMixin):
     __tablename__ = 'bookings'
+
+     # adding validation and constraints on the start_date and end_date columns to ensure that start_date is always before end_date.
+    __table_args__ = (
+        CheckConstraint('start_date <= end_date', name='start_date_end_date_check'),
+    )
 
     # Serialization rules
     # serializer_rules = ['booking_id', 'client_id', 'unit_id', 'start_date', 'end_date', 'goods_description']
@@ -29,3 +36,9 @@ class Booking(db.Model, SerializerMixin):
     
     def __repr__(self):
         return f'Booking({self.booking_id}, Product: {self.product.name})'
+    
+    # Calculating Booking Duration
+    def booking_duration(self):
+        if self.start_date and self.end_date:
+            return (self.end_date - self.start_date).days
+        return None

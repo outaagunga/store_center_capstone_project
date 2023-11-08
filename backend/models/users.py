@@ -7,7 +7,7 @@ from models.booking import Booking
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
-    serializer_rules = ['user_id', 'username', 'email', 'user_type']
+    serializer_rules = ['user_id', 'name', 'username', 'password', 'user_type', 'account_type', 'email', 'verified', 'token', 'created_at', 'updated_at']
     
     user_id = db.Column(db.Integer, primary_key=True)
     
@@ -17,6 +17,7 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(128), nullable=False)  # hashed
     user_type = db.Column(db.Enum('admin', 'client', 'employee'))
+    account_type = db.Column(db.String(50), nullable=False)  # Add account type here
     email = db.Column(db.String(150), nullable=False, unique=True)
     verified = db.Column(db.Boolean, default=False)
     token = db.Column(db.String(120), unique=True)  # for email verification
